@@ -1,0 +1,167 @@
+local DISCORD_INVITE = "https://discord.gg/QxRKp9wNeE"
+
+-- Safe clipboard copy across executors
+local function copyDiscordInvite()
+	local clipboardFn = (typeof(setclipboard) == "function" and setclipboard)
+		or (typeof(toclipboard) == "function" and toclipboard)
+		or (typeof(set_clipboard) == "function" and set_clipboard)
+
+	if clipboardFn then
+		local ok = pcall(clipboardFn, DISCORD_INVITE)
+		if ok then
+			return true
+		end
+	end
+	return false
+end
+
+-- Load WindUI
+local WindUI
+do
+	local ok, result = pcall(function()
+		return loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+	end)
+	if not ok or type(result) ~= "table" then
+		warn("[DARK MOON HUB] Failed to load WindUI: " .. tostring(result))
+		return
+	end
+	WindUI = result
+end
+
+-- Loader Start Notification
+pcall(function()
+	WindUI:Notify({
+		Title = "DARK MOON HUB • Loader",
+		Content = "Loading DARK MOON HUB...",
+		Duration = 2.5,
+		Icon = "loader",
+	})
+end)
+
+-- Create Compact DARK MOON HUB Window
+local Window = WindUI:CreateWindow({
+	Title = "DARK MOON HUB",
+	Icon = "moon",
+	Author = "biyxznd",
+	Folder = "DarkMoonHub",
+	Size = UDim2.fromOffset(430, 265),
+	Theme = "Dark",
+	Transparent = true,
+	SideBarWidth = 135,
+	HasOutline = true,
+})
+
+local isExecuting = false
+
+local function runScript(name, url)
+	if isExecuting then
+		return
+	end
+	isExecuting = true
+
+	local copied = copyDiscordInvite()
+
+	WindUI:Notify({
+		Title = "DARK MOON HUB",
+		Content = copied and ("Discord copied! Executing " .. name .. "...") or ("Executing " .. name .. "..."),
+		Duration = 3,
+		Icon = copied and "check" or "loader",
+	})
+
+	local ok, err = pcall(function()
+		local raw = game:HttpGet(url)
+		local fn = loadstring(raw)
+		assert(type(fn) == "function", "Failed to compile " .. name)
+		return fn()
+	end)
+
+	if ok then
+		task.wait(0.3)
+		pcall(function()
+			Window:Destroy()
+		end)
+	else
+		isExecuting = false
+		WindUI:Notify({
+			Title = "Execution Error",
+			Content = "Failed to run " .. name .. " (check console F9).",
+			Duration = 4,
+			Icon = "alert-triangle",
+		})
+		warn("[DARK MOON HUB] Error in " .. name .. ": " .. tostring(err))
+	end
+end
+
+-- Tabs
+local FpsTab = Window:Tab({
+	Title = "[FPS] One Tap",
+	Icon = "crosshair",
+})
+
+local Mm2Tab = Window:Tab({
+	Title = "Murder Mystery 2",
+	Icon = "sword",
+})
+
+local UniversalTab = Window:Tab({
+	Title = "Universal Script",
+	Icon = "globe",
+})
+
+-- [FPS] One Tap Section
+FpsTab:Section({
+	Title = "[FPS] One Tap Loader",
+})
+
+FpsTab:Button({
+	Title = "Execute [FPS] One Tap",
+	Desc = "Copies Discord invite & runs [FPS] One Tap, then closes hub.",
+	Callback = function()
+		runScript(
+			"[FPS] One Tap",
+			"https://pastebin.com/raw/RGuWwgvj"
+		)
+	end,
+})
+
+-- Murder Mystery 2 Section
+Mm2Tab:Section({
+	Title = "Murder Mystery 2 Loader",
+})
+
+Mm2Tab:Button({
+	Title = "Execute Murder Mystery 2",
+	Desc = "Copies Discord invite & runs Murder Mystery 2, then closes hub.",
+	Callback = function()
+		runScript(
+			"Murder Mystery 2",
+			"https://pastebin.com/raw/S3ipC5Ys"
+		)
+	end,
+})
+
+-- Universal Script Section
+UniversalTab:Section({
+	Title = "Universal Loader",
+})
+
+UniversalTab:Button({
+	Title = "Execute Universal Script",
+	Desc = "Copies Discord invite & runs Universal Script, then closes hub.",
+	Callback = function()
+		runScript(
+			"Universal Script",
+			"https://pastebin.com/raw/LEeXa6VY"
+		)
+	end,
+})
+
+-- Loader Ready Notification
+pcall(function()
+	WindUI:Notify({
+		Title = "DARK MOON HUB • Loader",
+		Content = "Loader ready! Select a script to execute.",
+		Duration = 3,
+		Icon = "moon",
+	})
+end)
