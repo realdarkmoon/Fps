@@ -103,6 +103,11 @@ local Mm2Tab = Window:Tab({
 	Icon = "sword",
 })
 
+local BreakAndStealTab = Window:Tab({
+	Title = "Break and Steal",
+	Icon = "package",
+})
+
 local UniversalTab = Window:Tab({
 	Title = "Universal Script",
 	Icon = "globe",
@@ -136,6 +141,22 @@ Mm2Tab:Button({
 		runScript(
 			"Murder Mystery 2",
 			"https://pastebin.com/raw/S3ipC5Ys"
+		)
+	end,
+})
+
+-- Break and Steal Section
+BreakAndStealTab:Section({
+	Title = "Break and Steal Loader",
+})
+
+BreakAndStealTab:Button({
+	Title = "Execute Break and Steal",
+	Desc = "Copies Discord invite & runs Break and Steal, then closes hub.",
+	Callback = function()
+		runScript(
+			"Break and Steal",
+			"https://raw.githubusercontent.com/realdarkmoon/FREE-TIME-JUST-try/refs/heads/main/Steal%20and%20rob"
 		)
 	end,
 })
